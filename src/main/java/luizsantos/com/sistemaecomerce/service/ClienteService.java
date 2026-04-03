@@ -18,7 +18,7 @@ public class ClienteService {
 
     public Cliente salvar(Cliente cliente) {
         // Regra 1: Não permitir cadastro de clientes com emails duplicados [cite: 78, 79]
-        if (clienteRepository.existeEmail(cliente.getEmail())) {
+        if (clienteRepository.existsByEmail(cliente.getEmail())) {
             throw new RuntimeException("Erro: Já existe um cliente cadastrado com este e-mail.");
         }
         return clienteRepository.save(cliente);
@@ -38,7 +38,7 @@ public class ClienteService {
 
         // Validação de e-mail na atualização (se o e-mail mudou, verifica se o novo já existe)
         if (!clienteExistente.getEmail().equals(clienteAtualizado.getEmail()) &&
-                clienteRepository.existeEmail(clienteAtualizado.getEmail())) {
+                clienteRepository.existsByEmail(clienteAtualizado.getEmail())) {
             throw new RuntimeException("Erro: O novo e-mail já está em uso por outro cliente.");
         }
 
