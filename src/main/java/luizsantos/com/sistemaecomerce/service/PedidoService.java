@@ -21,24 +21,16 @@ public class PedidoService {
         this.produtoService = produtoService;
     }
 
-    @Transactional // Garante consistência de estoque e persistência dos itens
+    @Transactional
     public Pedido criarPedido(Pedido pedido) {
-        // Define data e status inicial
         pedido.setData(LocalDateTime.now());
         pedido.setStatus(StatusPedido.CRIADO);
 
-        // Regra 2 e 3: Processar itens, validar estoque e calcular total
-        double valorTotal = 0;
-
         for (ItemPedido item : pedido.getItens()) {
-            // Regra 2: Valida e subtrai estoque via ProdutoService
-            produtoService.subtrairEstoque(item.getProduto().getId(), item.getQuantidade());
-
-            // Regra 3: O preço unitário deve vir do produto no momento da compra
-            item.setPrecoUnitario(item.getProduto().getPreco());
+            Produto produtoOriginal = produtoService.buscarPorId(item.getProduto().getId());
+            item.setPrecoUnitario(produtoOriginal.getPreco());
             item.setPedido(pedido);
-
-            valorTotal += item.getQuantidade() * item.getPrecoUnitario();
+            produtoService.subtrairEstoque(produtoOriginal.getId(), item.getQuantidade());
         }
 
         return pedidoRepository.save(pedido);

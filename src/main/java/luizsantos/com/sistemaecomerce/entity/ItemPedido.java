@@ -1,5 +1,7 @@
 package luizsantos.com.sistemaecomerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
@@ -18,11 +20,13 @@ public class ItemPedido {
 
     @ManyToOne
     @JoinColumn(name = "pedido_id")
+    @JsonIgnoreProperties("pedidos")
     private Pedido pedido;
 
     // Relacionamento N:1 com Produto [cite: 63]
     @ManyToOne
     @JoinColumn(name = "produto_id")
+    @JsonBackReference
     private Produto produto;
 
     // Construtores

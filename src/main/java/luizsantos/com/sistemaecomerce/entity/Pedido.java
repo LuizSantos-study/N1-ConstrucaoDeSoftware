@@ -1,5 +1,7 @@
 package luizsantos.com.sistemaecomerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -22,6 +24,7 @@ public class Pedido {
     // Relacionamento N:1 com Cliente
     @ManyToOne
     @JoinColumn(name = "cliente_id")
+    @JsonIgnoreProperties("pedidos")
     private Cliente cliente;
 
     // Relacionamento 1:1 com Endereco
@@ -31,6 +34,7 @@ public class Pedido {
 
     // Relacionamento 1:1 com ItemPedido
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<ItemPedido> itens = new ArrayList<>();
 
     public Pedido() {
